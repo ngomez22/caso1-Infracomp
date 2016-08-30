@@ -1,2 +1,4 @@
-# caso1-Infracomp
-Caso 1 del curso Infraestructura Computacional
+# Caso 1
+# Infraestructura Computacional 2016-2
+## Universidad de los Andes
+
