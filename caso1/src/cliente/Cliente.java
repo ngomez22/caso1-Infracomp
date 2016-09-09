@@ -1,4 +1,4 @@
-package caso1;
+package cliente;
 
 public class Cliente {
 
