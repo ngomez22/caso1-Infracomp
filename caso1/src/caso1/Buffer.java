@@ -16,6 +16,7 @@ public class Buffer {
 		this.tam = tam;
 		this.numClientes = numClientes;
 		this.termino = false;
+		this.mensajes = new ArrayList<>();
 	}
 	
 	public synchronized void enviar(Mensaje m) {

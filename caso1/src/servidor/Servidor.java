@@ -47,7 +47,7 @@ public class Servidor extends Thread {
 			for (int i=0; i<threadsClientes.length; i++){
 				nThreadsPorCliente[i] = Integer.parseInt(threadsClientes[i]);
 			}
-			int tamBuffer = Integer.parseInt("tamBuffer");
+			int tamBuffer = Integer.parseInt(prop.getProperty("tamBuffer"));
 			
 			//Crear el buffer
 			Buffer b = new Buffer(tamBuffer, nClientes);
