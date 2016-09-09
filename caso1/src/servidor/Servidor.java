@@ -29,4 +29,5 @@ public class Servidor {
 	public void setnThreads(int nThreads) {
 		this.nThreads = nThreads;
 	}
+	
 }
