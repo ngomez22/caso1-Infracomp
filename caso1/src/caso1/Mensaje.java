@@ -16,5 +16,16 @@ public class Mensaje {
 		this.valor = valor;
 	}
 	
-
+	public void esperar() {
+		try {
+			wait();
+		} catch(InterruptedException ie) {
+			ie.printStackTrace();
+		}
+	}
+	
+	public void leerMensaje() {
+		valor++;
+		notify();
+	}
 }
