@@ -24,7 +24,7 @@ public class Mensaje {
 		}
 	}
 	
-	public void leerMensaje() {
+	public void leer() {
 		valor++;
 		notify();
 	}
