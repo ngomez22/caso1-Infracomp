@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import caso1.Buffer;
+import cliente.Cliente;
 
 public class Servidor extends Thread {
 	
@@ -27,7 +28,7 @@ public class Servidor extends Thread {
 	}
 	
 	public void run() {
-		
+		buffer.retirar();
 	}
 	
 	public static void main (String[] args) {
@@ -48,12 +49,21 @@ public class Servidor extends Thread {
 			}
 			int tamBuffer = Integer.parseInt("tamBuffer");
 			
-			//Crear los componentes
-			//Buffer b = new Buffer(tamBuffer, nClientes);
+			//Crear el buffer
+			Buffer b = new Buffer(tamBuffer, nClientes);
+			
+			//Crear los threads del servidor
 			Servidor[] threads = new Servidor[nThreads];
 			for (int i=0; i<nThreads; i++) {
-				threads[i] = new Servidor(i, null);
+				threads[i] = new Servidor(i, b);
 				threads[i].start();
+			}
+			
+			//Crear los clientes
+			Cliente[] clientes = new Cliente[nClientes];
+			for (int i=0; i<nClientes; i++) {
+				clientes[i] = new Cliente(nThreadsPorCliente[i], b);
+				clientes[i].start();
 			}
 			
 		} catch (FileNotFoundException e) {
@@ -61,6 +71,5 @@ public class Servidor extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 }
