@@ -18,7 +18,7 @@ public class Buffer {
 		this.termino = false;
 	}
 	
-	public synchronized void leer(Mensaje m) {
+	public synchronized void enviar(Mensaje m) {
 		while (tam <= mensajes.size()) {
 			Thread.yield();
 		}
@@ -34,7 +34,7 @@ public class Buffer {
 		}
 	}
 	
-	public synchronized void escribir() {
+	public synchronized void retirar() {
 		while (!termino) {
 			if (0 == mensajes.size()) {
 				try {
