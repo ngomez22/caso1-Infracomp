@@ -16,7 +16,7 @@ public class Mensaje {
 		this.valor = valor;
 	}
 	
-	public void esperar() {
+	public synchronized void esperar() {
 		try {
 			wait();
 		} catch(InterruptedException ie) {
@@ -24,7 +24,7 @@ public class Mensaje {
 		}
 	}
 	
-	public void leer() {
+	public synchronized void leer() {
 		valor++;
 		notify();
 	}
