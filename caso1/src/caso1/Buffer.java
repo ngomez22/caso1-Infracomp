@@ -20,19 +20,22 @@ public class Buffer {
 	}
 	
 	public synchronized void enviar(Mensaje m) {
+		System.out.println("Llego el mensaje " + m.getValor());
 		while (tam <= mensajes.size()) {
 			Thread.yield();
 		}
 		mensajes.add(m);
+		System.out.println("Se añadio el mensaje " + m.getValor());
 		notify();
 		m.esperar();
 	}
 	
-	public synchronized void terminoMensajes() {
+	public synchronized boolean terminoMensajes() {
 		numClientes--;
 		if (numClientes == 0) {
 			termino = true;
 		}
+		return termino;
 	}
 	
 	public synchronized void retirar() {

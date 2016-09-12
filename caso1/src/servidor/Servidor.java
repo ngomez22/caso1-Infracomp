@@ -21,7 +21,9 @@ public class Servidor extends Thread {
 	}
 	
 	public void run() {
-		buffer.retirar();
+		while (!buffer.terminoMensajes()){
+			buffer.retirar();
+		}
 	}
 	
 	public long getId() {
