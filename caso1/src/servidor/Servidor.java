@@ -16,6 +16,7 @@ public class Servidor extends Thread {
 	
 	public Servidor(int id, Buffer buffer) {
 		super();
+		this.id = id;
 		this.buffer = buffer;
 	}
 
