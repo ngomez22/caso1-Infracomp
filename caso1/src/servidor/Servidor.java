@@ -22,6 +22,7 @@ public class Servidor extends Thread {
 	
 	public void run() {
 		while (!buffer.termino()){
+			System.out.println("Servidor " + id + " va a retirar un mensajeee");
 			buffer.retirar();
 		}
 	}
@@ -52,11 +53,19 @@ public class Servidor extends Thread {
 			}
 			int tamBuffer = Integer.parseInt(prop.getProperty("tamBuffer"));
 			
+			//Imprime resultados de la lectura en pantalla para verificación.
+			System.out.println("------------------SETUP------------------------");
+			System.out.println("Tamaño  del buffer: " + tamBuffer);
+			System.out.println("Cantidad de servidores: " + nThreads);
+			System.out.println("Cantidad de clientes: " + nClientes);
+			System.out.println("-----------------------------------------------");
+			
 			//Crear el buffer
 			Buffer b = new Buffer(tamBuffer, nClientes);
 			
 			//Crear los threads del servidor
 			Servidor[] threads = new Servidor[nThreads];
+			
 			for (int i=0; i<nThreads; i++) {
 				threads[i] = new Servidor(i, b);
 				threads[i].start();
