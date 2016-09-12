@@ -19,19 +19,19 @@ public class Servidor extends Thread {
 		this.id = id;
 		this.buffer = buffer;
 	}
-
-	public Buffer getBuffer() {
-		return buffer;
-	}
-
-	public void setBuffer(Buffer buffer) {
-		this.buffer = buffer;
-	}
 	
 	public void run() {
 		buffer.retirar();
 	}
 	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public static void main (String[] args) {
 		Properties prop = new Properties();
 		try {
@@ -63,7 +63,7 @@ public class Servidor extends Thread {
 			//Crear los clientes
 			Cliente[] clientes = new Cliente[nClientes];
 			for (int i=0; i<nClientes; i++) {
-				clientes[i] = new Cliente(nThreadsPorCliente[i], b);
+				clientes[i] = new Cliente(i, nThreadsPorCliente[i], b);
 				clientes[i].start();
 			}
 			
