@@ -30,12 +30,11 @@ public class Buffer {
 		m.esperar();
 	}
 	
-	public synchronized boolean terminoMensajes() {
+	public synchronized void terminoMensajes() {
 		numClientes--;
 		if (numClientes == 0) {
 			termino = true;
 		}
-		return termino;
 	}
 	
 	public synchronized void retirar() {
@@ -50,5 +49,13 @@ public class Buffer {
 			Mensaje m = mensajes.remove(0);
 			m.leer();
 		}
+	}
+
+	public boolean termino() {
+		return termino;
+	}
+
+	public void setTermino(boolean termino) {
+		this.termino = termino;
 	}
 }
