@@ -23,10 +23,11 @@ public class Cliente extends Thread{
 		Random rand = new Random();
 		while (0 <= numMensajes) {
 			Mensaje m = new Mensaje(rand.nextInt(100)+1);
-			System.out.println("Tratando de enviar mensaje " + m.getValor());
+			System.out.println("Cliente " + id + " tratando de enviar mensaje " + m.getValor());
 			buffer.enviar(m);
 			numMensajes--;
 		}
+		buffer.terminoMensajes();
 	}
 
 	public long getId() {
