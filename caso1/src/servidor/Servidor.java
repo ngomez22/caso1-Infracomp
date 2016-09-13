@@ -71,6 +71,7 @@ public class Servidor extends Thread {
 			//Crear los threads del servidor
 			Servidor[] threads = new Servidor[nThreads];
 			for (int i=0; i<nThreads; i++) {
+				System.out.println("cree " + (i+1));
 				threads[i] = new Servidor(i, b);
 				threads[i].start();
 			}

@@ -19,13 +19,15 @@ public class Buffer {
 		this.mensajes = new ArrayList<>();
 	}
 
-	public synchronized void enviar(Mensaje m) {
-		while (tam <= mensajes.size()) {
-			Thread.yield();
+	public synchronized boolean enviar(Mensaje m) {
+		if (tam <= mensajes.size()) {
+			notifyAll();
+			return false;
 		}
 		mensajes.add(m);
 		System.out.println("Buffer: Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size() + " mensajes.");
-		notify();
+		notifyAll();
+		return true;
 	}
 
 	public synchronized void terminoMensajes() {

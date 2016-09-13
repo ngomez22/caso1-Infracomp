@@ -24,7 +24,9 @@ public class Cliente extends Thread{
 		while (0 < numMensajes) {
 			int num = rand.nextInt(100)+1;
 			Mensaje m = new Mensaje(num);
-			buffer.enviar(m);
+			while (!buffer.enviar(m)) {
+				Thread.yield();
+			}
 			m.esperar();
 			if (m.getValor() == num+1) {
 				System.out.println("Mensaje " + numMensajes + " del cliente " + id + " fue procesado correctamente");
