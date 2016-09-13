@@ -26,7 +26,8 @@ public class Buffer {
 		}
 		mensajes.add(m);
 		System.out.println("Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size());
-		notify();
+		this.notifyAll();
+		System.out.println("Desperte a todos");
 		m.esperar();
 	}
 
@@ -38,14 +39,17 @@ public class Buffer {
 	}
 
 	public synchronized void retirar() {
-		if (0 == mensajes.size()) {
+		while (0 == mensajes.size()) {
 			try {
+				System.out.println("Esperando recibir");
 				wait();
+				System.out.println("Me despertaron");
 			} catch (InterruptedException ie) {
 				ie.printStackTrace();
 			}
 		}
 		Mensaje m = mensajes.remove(0);
+		System.out.println("Leyendo mensaje" + m.getValor());
 		m.leer();
 		System.out.println("Retiró el mensaje " + m.getValor());
 	}

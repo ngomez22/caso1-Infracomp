@@ -22,9 +22,9 @@ public class Servidor extends Thread {
 	
 	public void run() {
 		while (!buffer.termino()){
-			System.out.println("Servidor " + id + " va a retirar un mensajeee");
 			buffer.retirar();
 		}
+		buffer.notifyAll();
 	}
 	
 	public long getId() {
@@ -62,21 +62,20 @@ public class Servidor extends Thread {
 			
 			//Crear el buffer
 			Buffer b = new Buffer(tamBuffer, nClientes);
-			
-			//Crear los threads del servidor
-			Servidor[] threads = new Servidor[nThreads];
-			
-			for (int i=0; i<nThreads; i++) {
-				threads[i] = new Servidor(i, b);
-				threads[i].start();
-			}
-			
 			//Crear los clientes
 			Cliente[] clientes = new Cliente[nClientes];
 			for (int i=0; i<nClientes; i++) {
 				clientes[i] = new Cliente(i, nThreadsPorCliente[i], b);
 				clientes[i].start();
 			}
+			//Crear los threads del servidor
+			Servidor[] threads = new Servidor[nThreads];
+			for (int i=0; i<nThreads; i++) {
+				threads[i] = new Servidor(i, b);
+				threads[i].start();
+			}
+			
+			
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

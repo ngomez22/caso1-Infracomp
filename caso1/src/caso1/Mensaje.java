@@ -18,6 +18,7 @@ public class Mensaje {
 	
 	public synchronized void esperar() {
 		try {
+			System.out.println("Esperando");
 			wait();
 		} catch(InterruptedException ie) {
 			ie.printStackTrace();
@@ -26,6 +27,7 @@ public class Mensaje {
 	
 	public synchronized void leer() {
 		valor++;
+		System.out.println("Avisando");
 		notify();
 	}
 }
