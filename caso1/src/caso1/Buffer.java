@@ -20,12 +20,11 @@ public class Buffer {
 	}
 
 	public synchronized void enviar(Mensaje m) {
-		System.out.println("Llego el mensaje " + m.getValor());
 		while (tam <= mensajes.size()) {
 			Thread.yield();
 		}
 		mensajes.add(m);
-		System.out.println("Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size());
+		System.out.println("Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size() + " mensaje.");
 		notify();
 	}
 
@@ -34,22 +33,22 @@ public class Buffer {
 		if (numClientes == 0) {
 			termino = true;
 		}
+		notifyAll();
 	}
 
 	public synchronized void retirar() {
-		while (0 == mensajes.size()) {
+		while (0 == mensajes.size() && !termino) {
 			try {
-				System.out.println("Esperando recibir");
 				wait();
-				System.out.println("Me despertaron");
 			} catch (InterruptedException ie) {
 				ie.printStackTrace();
 			}
 		}
-		Mensaje m = mensajes.remove(0);
-		System.out.println("Leyendo mensaje" + m.getValor());
-		m.leer();
-		System.out.println("Retiró el mensaje " + m.getValor());
+		System.out.println(termino);
+		if (!termino) {
+			Mensaje m = mensajes.remove(0);
+			m.leer();
+		}
 	}
 
 	public boolean termino() {

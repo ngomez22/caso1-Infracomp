@@ -25,10 +25,11 @@ public class Cliente extends Thread{
 			Mensaje m = new Mensaje(rand.nextInt(100)+1);
 			buffer.enviar(m);
 			m.esperar();
+			System.out.println("Mensaje recibido " + m.getValor());
 			numMensajes--;
-			System.out.println(id + " " + numMensajes);
 		}
 		buffer.terminoMensajes();
+		System.out.println("Cliente termina todo");
 	}
 
 	public long getId() {
