@@ -32,6 +32,7 @@ public class Buffer {
 		numClientes--;
 		if (numClientes == 0) {
 			termino = true;
+			notifyAll();
 		}
 		notifyAll();
 	}
