@@ -24,7 +24,7 @@ public class Servidor extends Thread {
 		while (!buffer.termino()){
 			buffer.retirar();
 		}
-		System.out.println("Servidor termina todo");
+		System.out.println("Servidor " + id + " termina su ejecución");
 	}
 	
 	public long getId() {

@@ -24,7 +24,7 @@ public class Buffer {
 			Thread.yield();
 		}
 		mensajes.add(m);
-		System.out.println("Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size() + " mensaje.");
+		System.out.println("Buffer: Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size() + " mensajes.");
 		notify();
 	}
 

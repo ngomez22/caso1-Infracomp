@@ -27,14 +27,14 @@ public class Cliente extends Thread{
 			buffer.enviar(m);
 			m.esperar();
 			if (m.getValor() == num+1) {
-				System.out.println("Mensaje " + numMensajes + " del cliente " + id + " fue procesado correctamente.");
+				System.out.println("Mensaje " + numMensajes + " del cliente " + id + " fue procesado correctamente");
 			} else {
-				System.out.println("ERROR:^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n     Mensaje " + numMensajes + " del cliente " + id + " fue procesado incorrectamente.");
+				System.out.println("ERROR: Mensaje " + numMensajes + " del cliente " + id + " fue procesado incorrectamente");
 			}
 			numMensajes--;
 		}
 		buffer.terminoMensajes();
-		System.out.println("Cliente termina todo");
+		System.out.println("Cliente " + id +  " termina su ejecución");
 	}
 
 	public long getId() {
