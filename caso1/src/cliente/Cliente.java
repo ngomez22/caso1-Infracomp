@@ -24,6 +24,7 @@ public class Cliente extends Thread{
 		while (0 <= numMensajes) {
 			Mensaje m = new Mensaje(rand.nextInt(100)+1);
 			buffer.enviar(m);
+			m.esperar();
 			numMensajes--;
 			System.out.println(id + " " + numMensajes);
 		}

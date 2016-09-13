@@ -26,9 +26,7 @@ public class Buffer {
 		}
 		mensajes.add(m);
 		System.out.println("Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size());
-		this.notifyAll();
-		System.out.println("Desperte a todos");
-		m.esperar();
+		notify();
 	}
 
 	public synchronized void terminoMensajes() {
