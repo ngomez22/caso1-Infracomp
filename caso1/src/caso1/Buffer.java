@@ -44,7 +44,6 @@ public class Buffer {
 				ie.printStackTrace();
 			}
 		}
-		System.out.println(termino);
 		if (!termino) {
 			Mensaje m = mensajes.remove(0);
 			m.leer();

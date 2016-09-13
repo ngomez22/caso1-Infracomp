@@ -21,11 +21,16 @@ public class Cliente extends Thread{
 	
 	public void run() {
 		Random rand = new Random();
-		while (0 <= numMensajes) {
-			Mensaje m = new Mensaje(rand.nextInt(100)+1);
+		while (0 < numMensajes) {
+			int num = rand.nextInt(100)+1;
+			Mensaje m = new Mensaje(num);
 			buffer.enviar(m);
 			m.esperar();
-			System.out.println("Mensaje recibido " + m.getValor());
+			if (m.getValor() == num+1) {
+				System.out.println("Mensaje " + numMensajes + " del cliente " + id + " fue procesado correctamente.");
+			} else {
+				System.out.println("ERROR:^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n     Mensaje " + numMensajes + " del cliente " + id + " fue procesado incorrectamente.");
+			}
 			numMensajes--;
 		}
 		buffer.terminoMensajes();
