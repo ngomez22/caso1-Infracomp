@@ -60,14 +60,10 @@ public class Servidor extends Thread {
 			System.out.println("Cantidad de clientes: " + nClientes);
 			System.out.println("-----------------------------------------------");
 			
+			
+			
 			//Crear el buffer
 			Buffer b = new Buffer(tamBuffer, nClientes);
-			//Crear los clientes
-			Cliente[] clientes = new Cliente[nClientes];
-			for (int i=0; i<nClientes; i++) {
-				clientes[i] = new Cliente(i, nThreadsPorCliente[i], b);
-				clientes[i].start();
-			}
 			//Crear los threads del servidor
 			Servidor[] threads = new Servidor[nThreads];
 			for (int i=0; i<nThreads; i++) {
@@ -75,9 +71,12 @@ public class Servidor extends Thread {
 				threads[i] = new Servidor(i, b);
 				threads[i].start();
 			}
-			
-			
-			
+			//Crear los clientes
+			Cliente[] clientes = new Cliente[nClientes];
+			for (int i=0; i<nClientes; i++) {
+				clientes[i] = new Cliente(i, nThreadsPorCliente[i], b);
+				clientes[i].start();
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

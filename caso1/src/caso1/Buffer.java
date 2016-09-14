@@ -20,14 +20,16 @@ public class Buffer {
 	}
 
 	public synchronized boolean enviar(Mensaje m) {
+		boolean logroEnviar = false;
 		if (tam <= mensajes.size()) {
-			notifyAll();
-			return false;
+			notify();
+		} else {
+			mensajes.add(m);
+			System.out.println("Buffer: Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size() + " mensajes.");
+			logroEnviar = true;
+			notify();
 		}
-		mensajes.add(m);
-		System.out.println("Buffer: Se añadio el mensaje " + m.getValor() + ". Ahora hay " + mensajes.size() + " mensajes.");
-		notifyAll();
-		return true;
+		return logroEnviar;
 	}
 
 	public synchronized void terminoMensajes() {
