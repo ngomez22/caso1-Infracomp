@@ -1,4 +1,4 @@
-# Caso 1, Infraestructura Computacional 2016-2
+# Repositorio para los casos del curso Infraestructura Computacional
 ## Universidad de los Andes
 ## Integrantes:
 - Nicolás Gómez
