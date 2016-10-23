@@ -3,7 +3,6 @@ package caso2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Socket;
@@ -16,9 +15,13 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.jce.provider.PEMUtil;
+import org.bouncycastle.util.io.pem.PemObject;
+import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
+import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import sun.security.provider.X509Factory;
 
@@ -87,6 +90,7 @@ public class Cliente {
 			pw.println(X509Factory.BEGIN_CERT);
 			pw.print(encoder.encodeBuffer(cert.getEncoded()));
 			pw.println(X509Factory.END_CERT);
+			System.out.println("Certificado enviado.");
 			
 			//Se espera la respuesta del servidor al certificado
 			respuesta = br.readLine();
@@ -96,12 +100,15 @@ public class Cliente {
 				return;
 			}
 			String certificado = br.readLine();
-			respuesta = br.readLine();
-			if(!respuesta.equals(X509Factory.END_CERT)){
-				System.out.println("Error recibiendo certificado digital del servidor.");
-				cliente.close();
-				return;
+			while(!br.readLine().equals(X509Factory.END_CERT)){
+				certificado += "\n"+br.readLine();
 			}
+			BASE64Decoder decoder = new BASE64Decoder();
+			certificado = new String(decoder.decodeBuffer(certificado));
+			System.out.println("Certificado recibido.");
+			pw.println(OK);
+			respuesta = br.readLine();
+			pw.println("hola");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
