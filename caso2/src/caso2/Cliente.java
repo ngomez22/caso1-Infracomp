@@ -3,6 +3,7 @@ package caso2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Socket;
@@ -15,7 +16,11 @@ import java.util.Date;
 
 import javax.security.auth.x500.X500Principal;
 
+import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
+
+import sun.misc.BASE64Encoder;
+import sun.security.provider.X509Factory;
 
 public class Cliente {
 	
@@ -59,6 +64,7 @@ public class Cliente {
 			//Se seleccionan los aloritmos a utilizar y se envían al servidor.
 			pw.println(ALGORITMOS + ":" + ALGS + ":" + ALGA + ":" + ALGD);
 			
+			//Se espera verificación de que el servidor es compatible con los algoritmos
 			respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
 				System.out.println("Algoritmos incompatibles con el servidor.");
@@ -76,6 +82,26 @@ public class Cliente {
 			//Se genera el certificado digital del cliente
 			X509Certificate cert = generarCertificado(keyPair);
 			
+			//Se envía el certificado al servidor en formato .pem
+			BASE64Encoder encoder = new BASE64Encoder();
+			pw.println(X509Factory.BEGIN_CERT);
+			pw.print(encoder.encodeBuffer(cert.getEncoded()));
+			pw.println(X509Factory.END_CERT);
+			
+			//Se espera la respuesta del servidor al certificado
+			respuesta = br.readLine();
+			if(!respuesta.equals(X509Factory.BEGIN_CERT)){
+				System.out.println("Servidor no reconoció el certificado digital.");
+				cliente.close();
+				return;
+			}
+			String certificado = br.readLine();
+			respuesta = br.readLine();
+			if(!respuesta.equals(X509Factory.END_CERT)){
+				System.out.println("Error recibiendo certificado digital del servidor.");
+				cliente.close();
+				return;
+			}
 			
 		} catch (IOException e) {
 			e.printStackTrace();
