@@ -36,7 +36,7 @@ public class Cliente {
 		//Se inicia la comuniación
 		try {		
 			//Se confirma la conexión.
-			pw.println("HOLA");
+			pw.println(HOLA);
 			String respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
 				System.out.println("No se recibió respuesta del servidor.");
@@ -46,9 +46,8 @@ public class Cliente {
 			System.out.println("Se obtuvo respuesta del servidor.");
 			
 			//Se seleccionan los aloritmos a utilizar y se envían al servidor.
-			System.out.println("Ingrese los algoritmos que desea utilizar, separados por comas:\n");
-			String algoritmos = in.readLine();
-			pw.println("ALGORITMOS: " + formatAlgs(algoritmos.split(",")));
+			pw.println(ALGORITMOS + ":" + ALGS + ":" + ALGA + ":" + ALGD);
+			
 			respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
 				System.out.println("Algoritmos incompatibles con el servidor.");
@@ -65,16 +64,4 @@ public class Cliente {
 		}
 		cliente.close();
 	}
-	
-	public static String formatAlgs(String[] a){
-		StringBuilder ans = new StringBuilder();
-		for(int i=0; i<a.length; i++) {
-			if(i==0)
-				ans.append(a[i]);
-			else
-				ans.append(":"+a[i]);
-		}
-		return ans.toString();
-	}
-
 }
