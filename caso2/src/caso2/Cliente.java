@@ -4,7 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.Socket;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.security.auth.x500.X500Principal;
+
+import org.bouncycastle.x509.X509V1CertificateGenerator;
 
 public class Cliente {
 	
@@ -56,12 +67,44 @@ public class Cliente {
 			}
 			System.out.println("Algoritmos reconocidos por el servidor.");
 			
-			//
+			//Se genera el par de llaves del cliente
+			KeyPairGenerator kpg = KeyPairGenerator.getInstance(ALGA);
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+			kpg.initialize(1024, sr);
+			KeyPair keyPair = kpg.generateKeyPair();
+			
+			//Se genera el certificado digital del cliente
+			X509Certificate cert = generarCertificado(keyPair);
 			
 			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		cliente.close();
+	}
+	
+	public static X509Certificate generarCertificado(KeyPair keyPair) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		X509Certificate cert = null;
+		try {
+			Date startDate = sdf.parse("01/08/2016");
+			Date expiryDate = sdf.parse("01/08/2017");
+			BigInteger serialNumber = new BigInteger("83861006689788998");
+			X509V1CertificateGenerator cg = new X509V1CertificateGenerator();
+			X500Principal p = new X500Principal("CN=Christian Potdevin");
+			cg.setSerialNumber(serialNumber);
+			cg.setIssuerDN(p);
+			cg.setNotBefore(startDate);
+			cg.setNotAfter(expiryDate);
+			cg.setSubjectDN(p);
+			cg.setPublicKey(keyPair.getPublic());
+			cg.setSignatureAlgorithm("MD2withRSA");
+			cert = cg.generate(keyPair.getPrivate());
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return cert;
 	}
 }
