@@ -9,6 +9,12 @@ import java.net.Socket;
 public class Cliente {
 	
 	public static final int PUERTO = 4443;
+	public static final String HOLA = "HOLA";
+	public static final String ALGORITMOS = "ALGORITMOS";
+	public static final String ALGS = "DES";
+	public static final String ALGA = "RSA";
+	public static final String ALGD = "HMACMD5";						
+	
 	public static final String OK = "OK";
 	public static final String ERROR = "ERROR";
 
