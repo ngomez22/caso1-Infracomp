@@ -140,16 +140,12 @@ public class Cliente {
 			
 			SecretKeySpec llaveSimetricaSK = new SecretKeySpec(llaveSimetrica, ALGS);
 			
-			//SecretKeyFactory skf = SecretKeyFactory.getInstance(ALGS);
-			//AESKeySpec desSpec = new AESKeySpec(sLlaveSimetrica.getBytes());
-			//SecretKey llaveSimetrica = skf.generateSecret(desSpec);
-			
 			pw.println(bytesAHex(encriptarRSA(llavePublicaServidor, llaveSimetrica)));
 			System.out.println("Se envio la llave simetrica enctriptada al servidor.");
 			
 			respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
-				System.out.println("El servidor encontro un problema con la llave simetrica encriptada.");
+				System.out.println("El servidor encontro un problema con la llave simetrica encriptada enviada.");
 				cliente.close();
 				return;
 			}
@@ -170,6 +166,7 @@ public class Cliente {
 		cliente.close();
 	}
 	
+	//Metodo para generar un certificado digital firmado por uno mismo
 	private static X509Certificate generarCertificado(KeyPair keyPair) {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		X509Certificate cert = null;
