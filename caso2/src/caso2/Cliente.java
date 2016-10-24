@@ -15,10 +15,17 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.spec.KeySpec;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
 import org.bouncycastle.jce.provider.PEMUtil;
@@ -37,7 +44,7 @@ public class Cliente {
 	public static final int PUERTO = 4443;
 	public static final String HOLA = "HOLA";
 	public static final String ALGORITMOS = "ALGORITMOS";
-	public static final String ALGS = "DES";
+	public static final String ALGS = "AES";
 	public static final String ALGA = "RSA";
 	public static final String ALGD = "HMACMD5";						
 	
@@ -126,13 +133,19 @@ public class Cliente {
 			
 			//Se recibe el mensaje con la llaves simetrica encriptada
 			String llaveSimetricaEncryptada = br.readLine();
-			System.out.println("Se recibio la llave simetrica enctriptada del servidor");
+			System.out.println("Se recibio la llave simetrica enctriptada del servidor.");
 			
 			//Se decripta la llave simetrica
-			String llaveSimetrica = decriptar(llavesCliente.getPrivate(), llaveSimetricaEncryptada);
+			byte[] llaveSimetrica = decriptarRSA(llavesCliente.getPrivate(), hexABytes(llaveSimetricaEncryptada));
 			
-			pw.println(encriptar(llavePublicaServidor, llaveSimetrica));
-			System.out.println("Se envio la llave simetrica enctriptada al servidor");
+			SecretKeySpec llaveSimetricaSK = new SecretKeySpec(llaveSimetrica, ALGS);
+			
+			//SecretKeyFactory skf = SecretKeyFactory.getInstance(ALGS);
+			//AESKeySpec desSpec = new AESKeySpec(sLlaveSimetrica.getBytes());
+			//SecretKey llaveSimetrica = skf.generateSecret(desSpec);
+			
+			pw.println(bytesAHex(encriptarRSA(llavePublicaServidor, llaveSimetrica)));
+			System.out.println("Se envio la llave simetrica enctriptada al servidor.");
 			
 			respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
@@ -141,7 +154,16 @@ public class Cliente {
 				return;
 			}
 			
+			BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+			System.out.println("Ingrese su consulta.");
+			String consulta = teclado.readLine();
+			String consultaCodificada = bytesAHex(encriptarDES(llaveSimetricaSK, consulta)) + ":" + bytesAHex(encriptarDES(llaveSimetricaSK, hmacMD5(llaveSimetricaSK, consulta)));
+			pw.println(consultaCodificada);
+			System.out.println("Se envio la consulta al servidor.");
 			
+			respuesta = br.readLine();
+			String respuestaDecodificada = decriptarDES(llaveSimetricaSK, hexABytes(respuesta));
+			System.out.println(respuestaDecodificada);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -173,37 +195,35 @@ public class Cliente {
 		return cert;
 	}
 	
-	private static String encriptar(Key llave, String mensaje) {
-		String mensajeEncriptadoEnHex = null;
+	//Metodo para encriptar con el algoritmo RSA
+	private static byte[] encriptarRSA(Key llave, byte[] bytes) {
+		byte[] textoEncriptado = null;
 		try {
-			char[] hexArray = "0123456789ABCDEF".toCharArray();
-			byte[] mensajeEncriptado = null;
-			Cipher cifrador = Cipher.getInstance("RSA");
-			cifrador.init(Cipher.ENCRYPT_MODE, llave);
-			mensajeEncriptado = cifrador.doFinal(mensaje.getBytes());
-		    mensajeEncriptadoEnHex = bytesAHex(mensajeEncriptado);
+			Cipher encriptador = Cipher.getInstance(ALGA);
+			encriptador.init(Cipher.ENCRYPT_MODE, llave);
+			textoEncriptado = encriptador.doFinal(bytes);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return mensajeEncriptadoEnHex;
+		return textoEncriptado;
 	}
 	
-	private static String decriptar(Key llave, String mensajeEncriptado) {
-		String mensajeDecriptado = null;
-	    byte[] bytesMensajeEncriptado = hexABytes(mensajeEncriptado);
+	//Metodo para decriptar con el algoritmo RSA
+	private static byte[] decriptarRSA(Key llave, byte[] textoEncriptado) {
+		byte[] bytes = null;
 		try {
-			Cipher decriptador = Cipher.getInstance("RSA");
+			Cipher decriptador = Cipher.getInstance(ALGA);
 			decriptador.init(Cipher.DECRYPT_MODE, llave);
-			byte[] bytes = decriptador.doFinal(bytesMensajeEncriptado);
-			mensajeDecriptado = new String(bytes, "UTF-8");
+			bytes = decriptador.doFinal(textoEncriptado);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		return mensajeDecriptado;
+		return bytes;
 	}
 	
+	//Metodo para convertir una cadena de hexadecimales a un arreglo de bytes
 	private static byte[] hexABytes(String hex) {
 		int len = hex.length();
 	    byte[] bytes = new byte[len / 2];
@@ -213,8 +233,9 @@ public class Cliente {
 	    return bytes;
 	}
 	
+	//Metodo para convertir un arreglo de bytes a una cadena de hexadecimales
 	private static String bytesAHex(byte[] bytes) {
-		char[] hexArray = "0123456789ABCDEF".toCharArray();
+		char[] hexArray = "0123456789abcdef".toCharArray();
 		char[] hexChars = new char[bytes.length * 2];
 	    for ( int j = 0; j < bytes.length; j++ ) {
 	        int v = bytes[j] & 0xFF;
@@ -223,5 +244,62 @@ public class Cliente {
 	    }
 	    String hex = new String(hexChars);
 	    return hex;
+	}
+	
+	//Metodo para encriptar texto con el algoritmo DES
+	private static byte[] encriptarDES(Key llave, String texto) {
+		byte[] textoEncriptado = null;
+		try {
+			Cipher encriptador = Cipher.getInstance(ALGS + "/ECB/PKCS5Padding");
+			encriptador.init(Cipher.ENCRYPT_MODE, llave);
+			textoEncriptado = encriptador.doFinal(texto.getBytes());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return textoEncriptado;
+	}
+	
+	//Metodo para encriptar bytes con el algoritmo DES
+	private static byte[] encriptarDES(Key llave, byte[] bytes) {
+		byte[] bytesEncriptados = null;
+		try {
+			Cipher encriptador = Cipher.getInstance(ALGS + "/ECB/PKCS5Padding ");
+			encriptador.init(Cipher.ENCRYPT_MODE, llave);
+			bytesEncriptados = encriptador.doFinal(bytes);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return bytesEncriptados;
+	}
+	
+	//Metodo para encriptar con el algoritmo DES
+	private static String decriptarDES(Key llave, byte[] textoEncriptado) {
+		String textoDecriptado = null;
+		try {
+			Cipher decriptador = Cipher.getInstance(ALGS + "/ECB/PKCS5Padding");
+			decriptador.init(Cipher.DECRYPT_MODE, llave);
+			byte[] bytes = decriptador.doFinal(textoEncriptado);
+			textoDecriptado = new String(bytes, "UTF-8");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return textoDecriptado;
+	}
+	
+	//Metodo para encontrar el HmacMD5 de un texto
+	private static byte[] hmacMD5(Key llave, String texto) {
+		byte[] hash = null;
+		try {
+			Mac mac = Mac.getInstance(ALGD);
+			mac.init(llave);
+			hash = mac.doFinal(texto.getBytes());
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hash;
 	}
 }
