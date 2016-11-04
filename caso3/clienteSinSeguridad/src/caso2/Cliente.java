@@ -1,6 +1,8 @@
 package caso2;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -23,8 +25,18 @@ public class Cliente {
 	public static final String CIFRADOLS1 = "CIFRADOLS1";
 	public static final String CIFRADOLS2 = "CIFRADOLS2";
 	
+	long tiempoAutenticacion;
+	long tiempoActualizacion;
+	int falla;
+	
 	
 	public void run() throws Exception{
+		
+		//Escritura de datos
+		File file = new File("./data/");
+		file.createNewFile();
+		BufferedWriter bw = new BufferedWriter(new PrintWriter(file));
+		
 		//Se inicializan el Socket y los canales de comunicación.
 		Socket cliente = null;
 		PrintWriter pw = null;

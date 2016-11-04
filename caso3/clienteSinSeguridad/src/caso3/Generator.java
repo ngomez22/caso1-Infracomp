@@ -10,15 +10,17 @@ public class Generator {
 	private int[] transactions = {400, 200, 80};
 	
 	public Generator() {
-		Task work = createTask();
 		for(int i=0; i<timeout.length; i++){
+			String file = "./data/datos-"+transactions[i]+"-"+timeout[i]+".csv";
+			int fallas = 0;
+			Task work = createTask(fallas, file);
 			generator = new LoadGenerator("Prueba", transactions[i], work, timeout[i]);
 			generator.generate();
 		}
 	}
 
-	private Task createTask() {
-		return new ClienteTask();
+	private Task createTask(int fallas, String route) {
+		return new ClienteTask(fallas, route);
 	}
 
 	public static void main(String[] args) {
