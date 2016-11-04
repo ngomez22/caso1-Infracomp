@@ -5,10 +5,13 @@ package ServidorNovasoft;
 
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.sun.management.OperatingSystemMXBean;
 
 
 /**
@@ -32,7 +35,7 @@ public class Servidor {
 	/**
 	 * Constante que especifica el numero de threads que se usan en el pool de conexiones.
 	 */
-	public static final int N_THREADS = 6;
+	public int nThreads = 6;
 
 	/**
 	 * Puerto en el cual escucha el servidor. 
@@ -51,14 +54,22 @@ public class Servidor {
 	 * @param args Los argumentos del metodo main (vacios para este ejemplo).
 	 * @throws IOException Si el socket no pudo ser creado.
 	 */
-	private ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
+	private ExecutorService executor = Executors.newFixedThreadPool(nThreads);
+	
 	public static void main(String[] args) throws IOException {
 		elServidor = new Servidor();
 		elServidor.runServidor();
 	}
 	
 	private void runServidor() {
-
+		CPUDataRecorder cpu = new CPUDataRecorder("Test2");
+		cpu.start();
+		try{
+    		Thread.sleep(10000);
+    	}catch(InterruptedException e){
+    		e.printStackTrace();
+    	}
+		cpu.stopData();
 		int num = 0;
 		try {
 			// Crea el socket que escucha en el puerto seleccionado.
