@@ -1,4 +1,4 @@
-package clienteSeguridad;
+package caso2;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -51,7 +51,7 @@ public class Cliente {
 	public static final String OK = "OK";
 	public static final String ERROR = "ERROR";
 
-	public static void main(String[] args) throws Exception{
+	public void run() throws Exception{
 		//Se inicializan el Socket y los canales de comunicación.
 		Socket cliente = null;
 		PrintWriter pw = null;

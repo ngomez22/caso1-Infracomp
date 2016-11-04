@@ -24,7 +24,7 @@ public class Cliente {
 	public static final String CIFRADOLS2 = "CIFRADOLS2";
 	
 	
-	public static void main(String[] args) throws Exception{
+	public void run() throws Exception{
 		//Se inicializan el Socket y los canales de comunicación.
 		Socket cliente = null;
 		PrintWriter pw = null;
