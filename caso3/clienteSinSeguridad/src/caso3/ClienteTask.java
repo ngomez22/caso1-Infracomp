@@ -5,11 +5,9 @@ import uniandes.gload.core.Task;
 
 public class ClienteTask extends Task {
 	
-	private int nFallas;
 	private String datosFile;
 	
-	public ClienteTask(int nFallas, String datosFile) {
-		this.nFallas = nFallas;
+	public ClienteTask(String datosFile) {
 		this.datosFile = datosFile;
 	}
 

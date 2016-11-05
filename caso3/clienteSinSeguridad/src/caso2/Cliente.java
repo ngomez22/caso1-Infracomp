@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import caso3.Generator;
+
 public class Cliente {
 	
 	public static final int PUERTO = 4444;
@@ -25,10 +27,9 @@ public class Cliente {
 	public static final String CIFRADOLS1 = "CIFRADOLS1";
 	public static final String CIFRADOLS2 = "CIFRADOLS2";
 	
+	String datosFile;
 	long tiempoAutenticacion;
 	long tiempoActualizacion;
-	int falla;
-	
 	
 	public void run() throws Exception{
 		
@@ -105,6 +106,7 @@ public class Cliente {
 			
 			respuesta = br.readLine();
 			if(!respuesta.equals(CIFRADOLS2)){
+				Generator.registrarFalla();
 				System.out.println(ERROR);
 			}
 			System.out.println("Fin.");
