@@ -1,14 +1,17 @@
 package caso3;
 
+import java.io.PrintWriter;
+import java.io.Writer;
+
 import caso2.Cliente;
 import uniandes.gload.core.Task;
 
 public class ClienteTask extends Task {
 	
-	private String datosFile;
+	private Writer w;
 	
-	public ClienteTask(String datosFile) {
-		this.datosFile = datosFile;
+	public ClienteTask(Writer w) {
+		this.w = w;
 	}
 
 	@Override
@@ -23,7 +26,7 @@ public class ClienteTask extends Task {
 
 	@Override
 	public void execute() {
-		Cliente cliente = new Cliente();
+		Cliente cliente = new Cliente(w);
 		try {
 			cliente.run();
 		} catch(Exception e){

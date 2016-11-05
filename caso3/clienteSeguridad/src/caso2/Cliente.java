@@ -50,6 +50,18 @@ public class Cliente {
 	
 	public static final String OK = "OK";
 	public static final String ERROR = "ERROR";
+	
+	private PrintWriter data;
+	private long tiempoAutenticacion;
+	private long tiempoConsulta;
+	
+	public Cliente(){
+		
+	}
+	
+	public Cliente(PrintWriter pw) {
+		this.data = pw;
+	}
 
 	public void run() throws Exception{
 		//Se inicializan el Socket y los canales de comunicación.
@@ -131,6 +143,9 @@ public class Cliente {
 			pw.println(OK);
 			respuesta = br.readLine();
 			
+			//Se empieza a contar el tiempo del proceso de autenticación
+			long tInicio = System.currentTimeMillis();
+			
 			//Se recibe el mensaje con la llaves simetrica encriptada
 			String llaveSimetricaEncryptada = br.readLine();
 			System.out.println("Se recibio la llave simetrica enctriptada del servidor.");
@@ -150,9 +165,16 @@ public class Cliente {
 				return;
 			}
 			
+			//Se registra el tiempo que tardó la autenticación
+			tiempoAutenticacion = System.currentTimeMillis() - tInicio;
+			
 			BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 			System.out.println("Ingrese su consulta.");
 			String consulta = teclado.readLine();
+			
+			//Se mide el tiempo de la consulta
+			tInicio = System.currentTimeMillis();
+			
 			String consultaCodificada = bytesAHex(encriptarDES(llaveSimetricaSK, consulta)) + ":" + bytesAHex(encriptarDES(llaveSimetricaSK, hmacMD5(llaveSimetricaSK, consulta)));
 			pw.println(consultaCodificada);
 			System.out.println("Se envio la consulta al servidor.");
@@ -160,6 +182,10 @@ public class Cliente {
 			respuesta = br.readLine();
 			String respuestaDecodificada = decriptarDES(llaveSimetricaSK, hexABytes(respuesta));
 			System.out.println(respuestaDecodificada);
+			
+			//Se registra el tiempo que tardó la consulta
+			tiempoConsulta = System.currentTimeMillis() - tInicio;
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

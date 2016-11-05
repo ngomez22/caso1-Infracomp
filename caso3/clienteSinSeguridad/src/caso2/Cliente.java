@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.Socket;
 
 import caso3.Generator;
@@ -27,16 +28,15 @@ public class Cliente {
 	public static final String CIFRADOLS1 = "CIFRADOLS1";
 	public static final String CIFRADOLS2 = "CIFRADOLS2";
 	
-	String datosFile;
-	long tiempoAutenticacion;
-	long tiempoActualizacion;
+	private Writer data;
+	private long tiempoAutenticacion;
+	private long tiempoConsulta;
+	
+	public Cliente(Writer w) {
+		this.data = w;
+	}
 	
 	public void run() throws Exception{
-		
-		//Escritura de datos
-		File file = new File("./data/");
-		file.createNewFile();
-		BufferedWriter bw = new BufferedWriter(new PrintWriter(file));
 		
 		//Se inicializan el Socket y los canales de comunicación.
 		Socket cliente = null;
@@ -88,6 +88,9 @@ public class Cliente {
 			System.out.println("Se recibio el certificado del servidor.");
 			pw.println(OK);
 			
+			//Se mide el tiempo inicial para la autenticación de los participantes
+			long tInicial = System.currentTimeMillis();
+			
 			respuesta = br.readLine();
 			if(!respuesta.equals(CIFRADOKC)){
 				System.out.println(ERROR);
@@ -100,7 +103,14 @@ public class Cliente {
 			if(!respuesta.equals(OK)){
 				System.out.println(ERROR);
 			}
+			
+			//Se registra el tiempo que se tarda en autenticar las llaves.
+			tiempoAutenticacion = System.currentTimeMillis()-tInicial;
+			
+			
 			System.out.println("El servidor recibió mensaje cifrado");
+			
+			tInicial = System.currentTimeMillis(); 
 			
 			pw.println(CIFRADOLS1);
 			
@@ -110,6 +120,13 @@ public class Cliente {
 				System.out.println(ERROR);
 			}
 			System.out.println("Fin.");
+			
+			//Se registra el tiempo de la consulta.
+			tiempoConsulta = System.currentTimeMillis() - tInicial;
+			
+			//Se imprimen los datos al archivo.
+			data.write(tiempoAutenticacion + ", " + tiempoConsulta);
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
