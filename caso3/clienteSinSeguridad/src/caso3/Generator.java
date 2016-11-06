@@ -4,8 +4,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 
@@ -24,14 +26,15 @@ public class Generator {
 		fallas = 0;
 		for (int j=1; j<11; j++){
 			for(int i=0; i<timeout.length; i++){
-				String file = "./data/"+ j + "datos-" + transactions[i] + "-" + timeout[i] + ".csv";
-				try {
-					Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"));
-					writer.write("tAutorizacion, tConsulta");
-					Task work = createTask(writer);
+				String path = "./data/"+ j + "datos-" + transactions[i] + "-" + timeout[i] + ".csv";
+				File file = new File(path);
+				try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+					file.createNewFile();
+					bw.write("tAutorizacion(ms), tConsulta(ms)\n");
+					Task work = createTask(bw);
 					generator = new LoadGenerator("Prueba", transactions[i], work, timeout[i]);
 					generator.generate();
-					writer.write(fallas);
+					bw.write(""+fallas);
 					fallas = 0;
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -41,8 +44,8 @@ public class Generator {
 		}
 	}
 
-	private Task createTask(Writer w) {
-		return new ClienteTask(w);
+	private Task createTask(BufferedWriter f) {
+		return new ClienteTask(f);
 	}
 
 	public static void registrarFalla(){

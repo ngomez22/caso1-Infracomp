@@ -1,5 +1,7 @@
 package caso3;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.Writer;
 
@@ -8,10 +10,10 @@ import uniandes.gload.core.Task;
 
 public class ClienteTask extends Task {
 	
-	private Writer w;
+	private BufferedWriter f;
 	
-	public ClienteTask(Writer w) {
-		this.w = w;
+	public ClienteTask(BufferedWriter f) {
+		this.f = f;
 	}
 
 	@Override
@@ -26,7 +28,7 @@ public class ClienteTask extends Task {
 
 	@Override
 	public void execute() {
-		Cliente cliente = new Cliente(w);
+		Cliente cliente = new Cliente(f);
 		try {
 			cliente.run();
 		} catch(Exception e){

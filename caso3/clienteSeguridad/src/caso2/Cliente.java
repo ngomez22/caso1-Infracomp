@@ -1,6 +1,7 @@
 package caso2;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,16 +52,12 @@ public class Cliente {
 	public static final String OK = "OK";
 	public static final String ERROR = "ERROR";
 	
-	private PrintWriter data;
+	private BufferedWriter data;
 	private long tiempoAutenticacion;
 	private long tiempoConsulta;
 	
-	public Cliente(){
-		
-	}
-	
-	public Cliente(PrintWriter pw) {
-		this.data = pw;
+	public Cliente(BufferedWriter bw) {
+		this.data = bw;
 	}
 
 	public void run() throws Exception{
@@ -185,6 +182,11 @@ public class Cliente {
 			
 			//Se registra el tiempo que tardó la consulta
 			tiempoConsulta = System.currentTimeMillis() - tInicio;
+			
+			//Se imprimen los datos al archivo.
+			float t1 = tiempoAutenticacion/1000;
+			float t2 = tiempoConsulta/1000;
+			data.write(tiempoAutenticacion + ", " + tiempoConsulta+"\n");
 			
 		} catch (IOException e) {
 			e.printStackTrace();

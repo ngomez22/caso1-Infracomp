@@ -3,9 +3,14 @@ package caso2;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.Socket;
 
@@ -28,14 +33,13 @@ public class Cliente {
 	public static final String CIFRADOLS1 = "CIFRADOLS1";
 	public static final String CIFRADOLS2 = "CIFRADOLS2";
 	
-	private Writer data;
+	private BufferedWriter data;
 	private long tiempoAutenticacion;
 	private long tiempoConsulta;
 	
-	public Cliente(Writer w) {
-		this.data = w;
+	public Cliente(BufferedWriter data) {
+		this.data = data;
 	}
-	
 	public void run() throws Exception{
 		
 		//Se inicializan el Socket y los canales de comunicación.
@@ -125,11 +129,13 @@ public class Cliente {
 			tiempoConsulta = System.currentTimeMillis() - tInicial;
 			
 			//Se imprimen los datos al archivo.
-			data.write(tiempoAutenticacion + ", " + tiempoConsulta);
-			
+			float t1 = tiempoAutenticacion/1000;
+			float t2 = tiempoConsulta/1000;
+			data.write(tiempoAutenticacion + ", " + tiempoConsulta+"\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		cliente.close();
 	}
 }
