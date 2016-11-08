@@ -58,7 +58,8 @@ public class Servidor   {
 	}
 	
 	private void runServidor() {
-
+		CPUDataRecorder cpu = new CPUDataRecorder("Test2");
+		cpu.start();
 		int num = 0;
 		try {
 			// Crea el socket que escucha en el puerto seleccionado.
