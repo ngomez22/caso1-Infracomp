@@ -64,12 +64,6 @@ public class Servidor {
 	private void runServidor() {
 		CPUDataRecorder cpu = new CPUDataRecorder("Test2");
 		cpu.start();
-		try{
-    		Thread.sleep(10000);
-    	}catch(InterruptedException e){
-    		e.printStackTrace();
-    	}
-		cpu.stopData();
 		int num = 0;
 		try {
 			// Crea el socket que escucha en el puerto seleccionado.
