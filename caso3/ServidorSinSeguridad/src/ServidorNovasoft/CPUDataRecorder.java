@@ -36,6 +36,7 @@ public class CPUDataRecorder extends Thread{
 				String load = String.valueOf(100*bean.getSystemCpuLoad());
 				bw.write(time + "," + load + "\n");
 				time++;
+				bw.flush();
 			}
 			bw.close();
 		} catch (IOException e) {
