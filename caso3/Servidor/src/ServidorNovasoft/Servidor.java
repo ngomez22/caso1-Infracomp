@@ -32,7 +32,7 @@ public class Servidor   {
 	/**
 	 * Constante que especifica el numero de threads que se usan en el pool de conexiones.
 	 */
-	public static final int N_THREADS = 16;
+	public static final int N_THREADS = 8;
 
 	/**
 	 * Puerto en el cual escucha el servidor. 
@@ -58,7 +58,7 @@ public class Servidor   {
 	}
 	
 	private void runServidor() {
-		CPUDataRecorder cpu = new CPUDataRecorder("Test2");
+		CPUDataRecorder cpu = new CPUDataRecorder("8-80-100");
 		cpu.start();
 		int num = 0;
 		try {

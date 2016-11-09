@@ -47,7 +47,7 @@ public class Cliente {
 		PrintWriter pw = null;
 		BufferedReader br = null;
 		try {
-			cliente = new Socket("192.168.0.21", PUERTO);
+			cliente = new Socket("localhost"/*"192.168.0.21"*/, PUERTO);
 			pw = new PrintWriter(cliente.getOutputStream(), true);
 			br = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 			System.out.println("Inicialización exitosa.");
