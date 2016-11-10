@@ -17,7 +17,7 @@ import java.net.Socket;
 import caso3.Generator;
 
 public class Cliente {
-	
+
 	public static final int PUERTO = 4444;
 	public static final String HOLA = "HOLA";
 	public static final String ALGORITMOS = "ALGORITMOS";
@@ -32,27 +32,29 @@ public class Cliente {
 	public static final String CIFRADOKS = "CIFRADOKS+";
 	public static final String CIFRADOLS1 = "CIFRADOLS1";
 	public static final String CIFRADOLS2 = "CIFRADOLS2";
-	
+
 	private BufferedWriter data;
 	private long tiempoAutenticacion;
 	private long tiempoConsulta;
-	
+
 	public Cliente(BufferedWriter data) {
 		this.data = data;
 	}
 	public void run() throws Exception{
-		
+
 		//Se inicializan el Socket y los canales de comunicación.
 		Socket cliente = null;
 		PrintWriter pw = null;
 		BufferedReader br = null;
 		try {
-			cliente = new Socket("localhost"/*"192.168.0.21"*/, PUERTO);
+			//186.80.244.70
+			cliente = new Socket("192.168.0.34", PUERTO);
 			pw = new PrintWriter(cliente.getOutputStream(), true);
 			br = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 			System.out.println("Inicialización exitosa.");
 		} catch(Exception e) {
 			System.out.println("No se pudo establecer conexión con el servidor.");
+			Generator.registrarFalla();
 			return;
 		}
 		//Se inicia la comuniación
@@ -66,10 +68,10 @@ public class Cliente {
 				return;
 			}
 			System.out.println("Se obtuvo respuesta del servidor.");
-			
+
 			//Se seleccionan los aloritmos a utilizar y se envían al servidor.
 			pw.println(ALGORITMOS + ":" + ALGS + ":" + ALGA + ":" + ALGD);
-			
+
 			//Se espera verificación de que el servidor es compatible con los algoritmos
 			respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
@@ -78,10 +80,10 @@ public class Cliente {
 				return;
 			}
 			System.out.println("Se enviaron los algoritmos al servidor y fueron reconocidos.");
-			
+
 			pw.println(CERTI_CLIENTE);
 			System.out.println("Se envio el certificado al servidor.");
-			
+
 			//Se espera la respuesta del servidor con el certificado
 			respuesta = br.readLine();
 			if(!respuesta.equals(CERTI_SERVIDOR)){
@@ -91,51 +93,55 @@ public class Cliente {
 			}
 			System.out.println("Se recibio el certificado del servidor.");
 			pw.println(OK);
-			
+
 			//Se mide el tiempo inicial para la autenticación de los participantes
 			long tInicial = System.currentTimeMillis();
-			
+
 			respuesta = br.readLine();
 			if(!respuesta.equals(CIFRADOKC)){
 				System.out.println(ERROR);
 			}
 			System.out.println("Se recibió el mensaje cifrado");
-			
+
 			pw.println(CIFRADOKS);
-			
+
 			respuesta = br.readLine();
 			if(!respuesta.equals(OK)){
 				System.out.println(ERROR);
 			}
-			
+
 			//Se registra el tiempo que se tarda en autenticar las llaves.
 			tiempoAutenticacion = System.currentTimeMillis()-tInicial;
-			
-			
+
+
 			System.out.println("El servidor recibió mensaje cifrado");
-			
+
 			tInicial = System.currentTimeMillis(); 
-			
+
 			pw.println(CIFRADOLS1);
-			
+
 			respuesta = br.readLine();
 			if(!respuesta.equals(CIFRADOLS2)){
 				Generator.registrarFalla();
 				System.out.println(ERROR);
 			}
 			System.out.println("Fin.");
-			
+
 			//Se registra el tiempo de la consulta.
 			tiempoConsulta = System.currentTimeMillis() - tInicial;
-			
+
 			//Se imprimen los datos al archivo.
 			float t1 = tiempoAutenticacion/1000;
 			float t2 = tiempoConsulta/1000;
 			data.write(tiempoAutenticacion + ", " + tiempoConsulta+"\n");
+			data.flush();
+			Generator.contar();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("FALLAAAAAAAAA");
+			Generator.registrarFalla();
 		}
-		
+
 		cliente.close();
 	}
+
 }

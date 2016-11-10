@@ -35,6 +35,7 @@ import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.x509.X509V1CertificateGenerator;
 
+import caso3.Generator;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 import sun.security.jca.GetInstance;
@@ -67,12 +68,13 @@ public class Cliente {
 		BufferedReader br = null;
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 		try {
-			cliente = new Socket("localhost", PUERTO);
+			cliente = new Socket("192.168.0.34", PUERTO);
 			pw = new PrintWriter(cliente.getOutputStream(), true);
 			br = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 			System.out.println("Inicialización exitosa.");
 		} catch(Exception e) {
 			System.out.println("No se pudo establecer conexión con el servidor.");
+			Generator.registrarFalla();
 			return;
 		}
 		//Se inicia la comuniación
@@ -165,9 +167,7 @@ public class Cliente {
 			//Se registra el tiempo que tardó la autenticación
 			tiempoAutenticacion = System.currentTimeMillis() - tInicio;
 			
-			BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
-			System.out.println("Ingrese su consulta.");
-			String consulta = teclado.readLine();
+			String consulta = "Como se llama Christian?";
 			
 			//Se mide el tiempo de la consulta
 			tInicio = System.currentTimeMillis();
@@ -187,7 +187,8 @@ public class Cliente {
 			float t1 = tiempoAutenticacion/1000;
 			float t2 = tiempoConsulta/1000;
 			data.write(tiempoAutenticacion + ", " + tiempoConsulta+"\n");
-			
+			data.flush();
+			Generator.contar();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

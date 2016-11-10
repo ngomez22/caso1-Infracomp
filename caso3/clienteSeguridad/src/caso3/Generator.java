@@ -21,39 +21,44 @@ public class Generator {
 	private int[] transactions = {400, 200, 80};
 
 	private static int fallas;
+	private static int terminados;
 
 	public Generator() {
+		terminados = 0;
+		int i=2;
 		fallas = 0;
-		for (int j=1; j<11; j++){
-			for(int i=0; i<timeout.length; i++){
-				String path = "./data/"+ j + "datos-" + transactions[i] + "-" + timeout[i] + ".csv";
-				File file = new File(path);
-				try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-					file.createNewFile();
-					bw.write("tAutorizacion(ms), tConsulta(ms)\n");
-					Task work = createTask(bw);
-					generator = new LoadGenerator("Prueba", transactions[i], work, timeout[i]);
-					generator.generate();
-					bw.write(""+fallas);
-					fallas = 0;
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
+		String path = "./data/"+ 1 + "datos-" + transactions[i] + "-" + timeout[i] + ".csv";
+		File file = new File(path);
+		try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+			file.createNewFile();
+			bw.write("tAutorizacion(ms), tConsulta(ms)\n");
+			Task work = createTask(bw);
+			generator = new LoadGenerator("Prueba", transactions[i], work, timeout[i]);
+			generator.generate();
+			while(terminados<transactions[i]){
 			}
+			bw.write(""+fallas);
+			fallas = 0;
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
 	private Task createTask(BufferedWriter f) {
 		return new ClienteTask(f);
 	}
+	
+	public static synchronized void contar() {
+		terminados++;
+	}
 
 	public static void registrarFalla(){
 		fallas++;
 	}
+
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		Generator g = new Generator();
 	}
-
 }
